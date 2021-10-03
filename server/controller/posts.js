@@ -31,22 +31,18 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
 
 
-    const id = req.params.id;
-    console.log(id);
+    const { id: _id } = req.params;
+    console.log(_id);
 
 
-    var post = req.body;
+    const post = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        res.status(404).send(`${id} id not found`);
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        res.status(404).send(`No post with ${_id} id is found`);
     }
-    post =
-    {
-        ...post,
-        _id: id
-    };
-    await Posts.findByIdAndUpdate(id, post, { new: true })
-    res.status(200).send(post);
+
+    const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true })
+    res.status(200).send(updatedPost);
 }
 
 export const deletePost = async (req, res) => {
@@ -62,6 +58,6 @@ export const deletePost = async (req, res) => {
         res.status(200).send({ message: "Successfully deleted" });
     }
     catch (error) {
-        res.status(404).send("Item cannot be deleted due to some issue");
+        res.status(404).send({ message: "Item cannot be deleted due to some issue" });
     }
 }
