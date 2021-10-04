@@ -29,21 +29,28 @@ export const createPost = async (req, res) => {
 }
 
 export const updatePost = async (req, res) => {
-
-
     const { id: _id } = req.params;
     console.log(_id);
-
-
     const post = req.body;
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        res.status(404).send(`No post with ${_id} id is found`);
+    }
+    const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true })
+    res.status(200).send(updatedPost);
+}
+
+export const likePost = async (req, res) => {
+    const { id: _id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(_id)) {
         res.status(404).send(`No post with ${_id} id is found`);
     }
-
-    const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true })
+    const post = await Posts.findById(_id);
+    // console.log("Likes Post ", post);
+    const updatedPost = await Posts.findByIdAndUpdate(_id, { likesCount: post.likesCount + 1 }, { new: true })
     res.status(200).send(updatedPost);
 }
+
 
 export const deletePost = async (req, res) => {
 

@@ -7,13 +7,13 @@ import { Provider } from 'react-redux';
 import store from './redux/store/index';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { blue, orange } from '@mui/material/colors';
+import { purple, orange } from '@mui/material/colors';
 
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: blue[500],
+      main: purple[500],
     },
     secondary: {
       main: orange[500]

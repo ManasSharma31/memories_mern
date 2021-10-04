@@ -11,7 +11,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useDispatch } from 'react-redux';
-import { deletePost } from '../redux/actions/actions.js'
+import { deletePost, likePost } from '../redux/actions/actions.js'
 
 const useStyle = makeStyles(theme => ({
     card: {
@@ -82,7 +82,7 @@ export default function SinglePost({ post, setCurrentId }) {
                 </div>
             </CardContent>
             <CardActions className={classes.cardActions}>
-                <Button size="small" style={{ fontSize: "8px" }} variant="outlined"><ThumbUpAltIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Likes {post.likesCount}</Button>
+                <Button size="small" style={{ fontSize: "8px" }} variant="outlined" onClick={() => dispatch(likePost(post._id))}><ThumbUpAltIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Likes {post.likesCount}</Button>
                 <Button size="small" variant="outlined" style={{ fontSize: "8px" }} onClick={() => dispatch(deletePost(post._id))}><DeleteIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Delete</Button>
             </CardActions>
         </Card>

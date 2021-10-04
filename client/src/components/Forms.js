@@ -39,6 +39,7 @@ export default function Forms({ currentId, setCurrentId }) {
     const [postData, setPostDate] = useState(initialState);
     const post = useSelector(state => currentId ? state.posts.posts.find(p => p._id === currentId) : null)
     const classes = useStyle();
+
     const dispatch = useDispatch()
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -85,7 +86,9 @@ export default function Forms({ currentId, setCurrentId }) {
                 </div>
                 <Button variant="contained" onClick={submit} fullWidth>Submit</Button>
                 <Button variant="contained" onClick={clear} color="secondary" fullWidth>Clear</Button>
+
             </form>
+
         </Paper>
     )
 }

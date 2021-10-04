@@ -5,7 +5,7 @@ const initialState = {
 }
 
 const postReducer = (state = initialState, action) => {
-    console.log("action called", action);
+
     switch (action.type) {
 
         case types.GET_POSTS:
@@ -22,8 +22,8 @@ const postReducer = (state = initialState, action) => {
                 posts: state.posts.filter(item => item._id !== action.payload)
             };
         case types.UPDATE_POST:
+        case types.LIKE_POST:
             return {
-                ...state,
                 posts: state.posts.map((p) => p._id === action.payload._id ? action.payload : p)
             }
 
