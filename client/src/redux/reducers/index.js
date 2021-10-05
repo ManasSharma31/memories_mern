@@ -5,7 +5,7 @@ import userReducer from './user';
 
 const rootReducer = combineReducers({
     posts: postReducer,
-    userR: userReducer,
+    user: userReducer,
 })
 
 export default rootReducer;

@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import { Avatar, Button, Typography } from '@mui/material';
+import { Avatar, Button, Typography, typographyClasses } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutInitiate } from '../redux/actions/user';
+import * as types from '../redux/actions/actionTypes'
+
+
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -16,8 +18,6 @@ const useStyle = makeStyles((theme) => ({
     },
     appbar: {
         position: "fixed",
-        // top: "0"
-
     },
     left: {
         display: "flex",
@@ -36,7 +36,23 @@ const useStyle = makeStyles((theme) => ({
 }))
 export default function Header() {
 
-    const { user } = useSelector(state => state.userR);
+    // const { user } = useSelector(state => state.userR);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+    const history = useHistory();
+    const location = useLocation();
+    const logout = () => {
+
+        dispatch({
+            type: types.LOGOUT
+        });
+        history.push("/auth");
+    }
+    useEffect(() => {
+        const token = user?.token;
+
+        setUser(JSON.parse(localStorage.getItem("profile")))
+    }, [location])
+    console.log(user);
     const classes = useStyle();
     const dispatch = useDispatch();
     return (
@@ -51,10 +67,10 @@ export default function Header() {
 
                 {
                     user ? (<div className={classes.right}>
-                        <Typography variant="body2" component="p" name="title" >{user?.displayName}</Typography>
-                        <Avatar src={user.photoURL} alt={user.displayName}>{user?.displayName.charAt(0)}</Avatar>
-                        <Button variant="contained" style={{ backgroundColor: "red" }} size="small" onClick={() => dispatch(logoutInitiate())}>Log out</Button>
-                    </div>) : <Button component={Link} to="/auth" variant="contained">Sign Up</Button>
+                        <Typography variant="body2" component="p" name="title" >{user.result.name}</Typography>
+                        <Avatar src={user.result.imageUrl} alt={user.result.name}>{user.result.name.charAt(0)}</Avatar>
+                        <Button variant="contained" style={{ backgroundColor: "red" }} size="small" onClick={() => logout()}>Log out</Button>
+                    </div>) : <Button component={Link} to="/auth" variant="contained">Sign In</Button>
                 }
 
             </Toolbar>

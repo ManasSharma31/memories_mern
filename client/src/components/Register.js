@@ -1,13 +1,15 @@
-import { Avatar, Button, CircularProgress, Container, Paper, TextField, Typography } from '@mui/material';
+import { Avatar, Button, CircularProgress, Container, Grid, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material';
 import React from 'react'
 import { useState } from 'react'
 import { makeStyles } from '@mui/styles';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import GoogleIcon from '@mui/icons-material/Google';
-import { registerInitiate, signIn } from '../redux/actions/user';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { GoogleLogin } from 'react-google-login';
+import * as types from '../redux/actions/actionTypes'
 const useStyle = makeStyles(theme => ({
 
     paper: {
@@ -47,8 +49,10 @@ export default function Register() {
     }
     const [user, setUser] = useState(initialState);
     const dispatch = useDispatch();
-    const { loading } = useSelector(state => state.userR);
+    const { loading } = useSelector(state => state.user);
     const history = useHistory();
+    const [showPass, setShowPass] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -57,43 +61,76 @@ export default function Register() {
             [name]: value
         }))
     }
-
-    const submit = (e) => {
-        e.preventDefault();
-        dispatch(registerInitiate(user));
-        setUser(initialState);
+    const googleFailure = (error) => {
+        console.log(error);
+        console.log("Opps ! Something went wrong");
     }
-    const googleSignIn = (e) => {
-        e.preventDefault();
-        dispatch(signIn());
+    const googleSuccess = async (res) => {
+        console.log("Google user", res);
+        const result = res?.profileObj;
+        const token = res?.tokenId;
 
+        dispatch({
+            type: types.AUTH,
+            data: { result, token }
+        })
+        history.push("/");
     }
+
+
     const classes = useStyle();
     return (
 
         loading ?
-            (<div style={{ margin: "10px 50%" }}><CircularProgress sx={{ color: "black" }} /> </div>) :
+            <div style={{ margin: "10px 50%" }}><CircularProgress sx={{ color: "black" }} /> </div> :
 
-            (<Container component="main" maxWidth="xs">
-                <Paper className={classes.paper}>
-                    <form autoComplete="off" noValidate method="POST" className={classes.form}>
+            <Container component="main" maxWidth="xs">
+                <Paper className={classes.paper} elevation={3}>
+                    <form autoComplete="on" noValidate method="POST" className={classes.form}>
                         <Avatar style={{ backgroundColor: "purple" }}>
                             <LockOpenIcon ></LockOpenIcon>
                         </Avatar>
-                        <Typography variant="h5"> Sign Up</Typography>
-                        <div className={classes.name}>
-                            <TextField name="firstName" label="First Name" onChange={handleChange} fullWidth autoFocus value={user.firstName} required size="small" />
-                            <TextField name="lastName" label="Last Name" onChange={handleChange} fullWidth value={user.lastName} required size="small" />
-                        </div>
+                        <Typography variant="h5"> {isSignUp ? "Sign Up" : "Sign In"}</Typography>
+                        {
+                            isSignUp && (<div className={classes.name}>
+                                <TextField name="firstName" label="First Name" onChange={handleChange} fullWidth autoFocus value={user.firstName} required size="small" />
+                                <TextField name="lastName" label="Last Name" onChange={handleChange} fullWidth value={user.lastName} required size="small" />
+                            </div>)
+                        }
                         <TextField name="email" label="Email" onChange={handleChange} fullWidth value={user.email} required size="small" />
-                        <TextField name="password" label="Password" onChange={handleChange} fullWidth value={user.password} required size="small" />
-                        <TextField name="cpassword" label="Confirm Password" onChange={handleChange} fullWidth value={user.cpassword} required size="small" />
-                        <Button variant="contained" onClick={submit} fullWidth>Sign Up</Button>
-                        <Button variant="contained" onClick={googleSignIn} fullWidth><GoogleIcon fontSize="small" />GOOGLE SIGN IN</Button>
+                        <TextField name="password" label="Password" onChange={handleChange} fullWidth value={user.password} required size="small" type={showPass ? "text" : "password"} InputProps={{
+                            endAdornment: (<InputAdornment position="end">
+                                <IconButton onClick={() => setShowPass((prev) => !prev)}>
+                                    <VisibilityIcon />
+                                </IconButton>
+                            </InputAdornment>)
+                        }} />
+                        {isSignUp &&
+                            <TextField name="cpassword" label="Confirm Password" onChange={handleChange} fullWidth value={user.cpassword} required size="small" />
+                        }
+                        <Button variant="contained" onClick={() => { }} fullWidth>{isSignUp ? "Sign Up" : "Sign In"}</Button>
+                        <GoogleLogin
+                            clientId='862817458747-204lqoglmeo00flvhing60nvr1eihtrk.apps.googleusercontent.com'
+                            render={(renderProps) => (
+                                <Button variant="contained" onClick={renderProps.onClick} disabled={renderProps.disabled} fullWidth startIcon={<GoogleIcon fontSize="small" />}>GOOGLE SIGN IN</Button>
+                            )}
+                            onSuccess={googleSuccess}
+                            onFailure={googleFailure}
+                            cookiePolicy="single_host_origin"
+
+                        />
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Button size="small" style={{ color: "black" }} onClick={() => setIsSignUp((prev) => !prev)}> {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}</Button>
+
+                            </Grid>
+                        </Grid>
+
+
                     </form>
                 </Paper>
 
-            </Container>)
+            </Container >
 
     )
 }
