@@ -10,7 +10,7 @@ import moment from 'moment';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deletePost, likePost } from '../redux/actions/actions.js'
 
 const useStyle = makeStyles(theme => ({
@@ -52,6 +52,7 @@ const useStyle = makeStyles(theme => ({
 export default function SinglePost({ post, setCurrentId }) {
     const classes = useStyle();
     const dispatch = useDispatch();
+    const { user } = useSelector(state => state.user)
     return (
         <Card className={classes.card} sx={{ maxWidth: 345, borderRadius: "10px" }}>
             <CardMedia
@@ -65,13 +66,13 @@ export default function SinglePost({ post, setCurrentId }) {
                 <div className={classes.overlay1}>
                     <div>
                         <Typography variant="h5" component="div">
-                            {post.creator}
+                            {post.name}
                         </Typography>
                         <Typography variant="body2" component="p" >
                             {moment(post.createdAt).fromNow()}
                         </Typography>
                     </div>
-                    <Button size="small" style={{ color: "white" }} onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="small" /></Button>
+                    {(user?.result?.googleId === post.creator || user?.result?._id === post.creator) && <Button size="small" style={{ color: "white" }} onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="small" /></Button>}
                 </div>
                 <div>
                     <Typography variant="body2" fontWeight="fontWeightBold" color="textSecondary">{post?.tags.map(t => `#${t} `)}</Typography>
@@ -82,8 +83,10 @@ export default function SinglePost({ post, setCurrentId }) {
                 </div>
             </CardContent>
             <CardActions className={classes.cardActions}>
-                <Button size="small" style={{ fontSize: "8px" }} variant="outlined" onClick={() => dispatch(likePost(post._id))}><ThumbUpAltIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Likes {post.likesCount}</Button>
-                <Button size="small" variant="outlined" style={{ fontSize: "8px" }} onClick={() => dispatch(deletePost(post._id))}><DeleteIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Delete</Button>
+                <Button size="small" style={{ fontSize: "8px" }} variant="outlined" onClick={() => dispatch(likePost(post._id))}><ThumbUpAltIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Likes {post.likes.length}</Button>
+                {
+                    (user?.result?.googleId === post.creator || user?.result?._id === post.creator) && (<Button size="small" variant="outlined" style={{ fontSize: "8px" }} onClick={() => dispatch(deletePost(post._id))}><DeleteIcon fontSize="small" style={{ fontSize: "10px", marginRight: "2px" }} />Delete</Button>)
+                }
             </CardActions>
         </Card>
     )

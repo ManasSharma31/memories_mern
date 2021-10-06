@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv'
 import postsRouter from './routes/posts.js'
+import userRouter from './routes/user.js'
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.use('/posts', postsRouter);
+app.use('/user', userRouter);
 
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {

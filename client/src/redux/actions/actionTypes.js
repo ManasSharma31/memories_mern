@@ -5,3 +5,4 @@ export const UPDATE_POST = "UPDATE_POST";
 export const LIKE_POST = "LIKE_POST";
 export const AUTH = "AUTH";
 export const LOGOUT = "LOGOUT";
+export const ERROR = "ERROR";

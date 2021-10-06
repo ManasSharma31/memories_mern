@@ -17,7 +17,7 @@ export default function Body() {
     return (
         <Grow in style={{ marginTop: "70px" }}>
             <Container>
-                <Grid container justifyContent="space-between" alignItems="stretch" spacing={2} sx={{ flexDirection: matches && "column-reverse" }}>
+                <Grid container justifyContent="space-between" spacing={2} sx={{ flexDirection: matches && "column-reverse" }}>
                     <Grid item xs={12} sm={7}>
                         <Posts setCurrentId={setCurrentId} />
                     </Grid>

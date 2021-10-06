@@ -34,11 +34,13 @@ const useStyle = makeStyles((theme) => ({
     },
 }))
 
+const initialState = { title: '', message: '', tags: [], selectedFile: null };
 export default function Forms({ currentId, setCurrentId }) {
-    const initialState = { creator: '', title: '', message: '', tags: [], selectedFile: '' };
+
     const [postData, setPostDate] = useState(initialState);
     const post = useSelector(state => currentId ? state.posts.posts.find(p => p._id === currentId) : null)
     const classes = useStyle();
+    const { user } = useSelector(state => state.user);
 
     const dispatch = useDispatch()
     const handleChange = (e) => {
@@ -55,13 +57,13 @@ export default function Forms({ currentId, setCurrentId }) {
         }
     }, [currentId, post])
 
-    const submit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (currentId) {
-            dispatch(updatePost(currentId, postData))
+            dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }))
         }
         else {
-            dispatch(createPost(postData));
+            dispatch(createPost({ ...postData, name: user?.result?.name }));
         }
         setCurrentId(null);
         setPostDate(initialState);
@@ -75,16 +77,15 @@ export default function Forms({ currentId, setCurrentId }) {
 
     return (
         <Paper className={classes.paper}>
-            <form autoComplete="off" noValidate method="POST" className={classes.form}>
+            <form autoComplete="off" noValidate method="POST" className={classes.form} onSubmit={handleSubmit}>
                 <Typography variant="h5">{currentId ? "Editing" : "Creating"} a memory</Typography>
                 <TextField name="title" label="Title" onChange={handleChange} fullWidth value={postData.title} size="small" />
-                <TextField name="creator" label="Creator" onChange={handleChange} fullWidth value={postData.creator} size="small" />
                 <TextField name="message" label="Message" onChange={handleChange} fullWidth value={postData.message} size="small" />
-                <TextField name="tags" label="Tags" onChange={(e) => setPostDate({ ...postData, tags: e.target.value.split(',') })} fullWidth value={postData.tags} size="small" />
+                <TextField name="tags" label="Tags(comma seperated)" onChange={(e) => setPostDate({ ...postData, tags: e.target.value.split(',') })} fullWidth value={postData.tags} size="small" />
                 <div className={classes.fileInput}>
                     <FileBase type="file" multiple={false} onDone={({ base64 }) => setPostDate({ ...postData, selectedFile: base64 })} />
                 </div>
-                <Button variant="contained" onClick={submit} fullWidth>Submit</Button>
+                <Button variant="contained" type="submit" fullWidth>Submit</Button>
                 <Button variant="contained" onClick={clear} color="secondary" fullWidth>Clear</Button>
 
             </form>

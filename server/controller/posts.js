@@ -17,7 +17,7 @@ export const createPost = async (req, res) => {
 
     const content = req.body;
 
-    const post = new Posts(content);
+    const post = new Posts({ ...content, creator: req.userId, createdAt: new Date().toISOString() });
     try {
 
         await post.save();
@@ -30,7 +30,7 @@ export const createPost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     const { id: _id } = req.params;
-    console.log(_id);
+
     const post = req.body;
     if (!mongoose.Types.ObjectId.isValid(_id)) {
         res.status(404).send(`No post with ${_id} id is found`);
@@ -41,13 +41,24 @@ export const updatePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
     const { id: _id } = req.params;
+    if (!req.userId)
+        return res.json({ message: "Unauthorized" })
 
     if (!mongoose.Types.ObjectId.isValid(_id)) {
         res.status(404).send(`No post with ${_id} id is found`);
     }
     const post = await Posts.findById(_id);
     // console.log("Likes Post ", post);
-    const updatedPost = await Posts.findByIdAndUpdate(_id, { likesCount: post.likesCount + 1 }, { new: true })
+
+    const index = post.likes.findIndex(id => id === String(req.userId));
+    if (index === -1) {
+        post.likes.push(req.userId);
+    }
+    else {
+        post.likes = post.likes.filter(id => id !== String(req.userId))
+    }
+
+    const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true })
     res.status(200).send(updatedPost);
 }
 

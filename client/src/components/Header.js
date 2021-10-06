@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import { Avatar, Button, Typography, typographyClasses } from '@mui/material';
+import { Avatar, Button, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as types from '../redux/actions/actionTypes'
 
@@ -37,9 +37,12 @@ const useStyle = makeStyles((theme) => ({
 export default function Header() {
 
     // const { user } = useSelector(state => state.userR);
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+    // const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+
+
+    const { user } = useSelector(state => state.user);
+
     const history = useHistory();
-    const location = useLocation();
     const logout = () => {
 
         dispatch({
@@ -47,19 +50,19 @@ export default function Header() {
         });
         history.push("/auth");
     }
-    useEffect(() => {
-        const token = user?.token;
+    // useEffect(() => {
+    //     // const token = user?.token;
 
-        setUser(JSON.parse(localStorage.getItem("profile")))
-    }, [location])
-    console.log(user);
+    //     // setUser(JSON.parse(localStorage.getItem("profile")))
+    // }, [user])
+
     const classes = useStyle();
     const dispatch = useDispatch();
     return (
         <AppBar position="fixed" >
             <Toolbar className={classes.root}>
                 <div className={classes.left}>
-                    <Typography variant="h5" align="center" component="div">
+                    <Typography variant="h5" align="center" component="div" fontWeight="fontWeightBold" sx={{ letterSpacing: "2px", background: "linear-gradient(to right, #30CFD0 0%, #330867 100%)" }}>
                         Memories
                     </Typography>
                     <img src="/images/memories.png" height="50" alt="logo" ></img>

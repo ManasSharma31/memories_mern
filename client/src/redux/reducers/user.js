@@ -19,6 +19,12 @@ const userReducer = (state = initialState, action) => {
         case types.LOGOUT:
             localStorage.clear();
             return { ...state, user: null };
+
+        case types.ERROR:
+            return {
+                ...state,
+                error: action.payload
+            };
         default:
             return state
     }
