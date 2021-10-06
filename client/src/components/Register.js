@@ -123,7 +123,7 @@ export default function Register() {
                     }
                     <Button variant="contained" type="submit" fullWidth>{isSignUp ? "Sign Up" : "Sign In"}</Button>
                     <GoogleLogin
-                        clientId={GOOGLE_CLIENT_ID}
+                        clientId={process.env.GOOGLE_CLIENT_ID}
                         render={(renderProps) => (
                             <Button variant="contained" onClick={renderProps.onClick} disabled={renderProps.disabled} fullWidth startIcon={<GoogleIcon fontSize="small" />}>GOOGLE SIGN IN</Button>
                         )}
