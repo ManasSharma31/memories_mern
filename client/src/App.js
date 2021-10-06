@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Body from "./components/Body";
 import Header from "./components/Header";
 import { fetch } from "./redux/actions/actions";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Register from "./components/Register";
 

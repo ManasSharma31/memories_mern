@@ -10,7 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GoogleLogin } from 'react-google-login';
 import { signIn, signUp } from '../redux/actions/user';
 import * as types from '../redux/actions/actionTypes'
-import GOOGLE_CLIENT_ID from '../keys';
+
 const useStyle = makeStyles(theme => ({
 
     paper: {
@@ -99,7 +99,7 @@ export default function Register() {
 
         <Container component="main" maxWidth="xs">
             <Paper className={classes.paper} elevation={3}>
-                <form autoComplete="on" noValidate method="POST" className={classes.form} onSubmit={handleSubmit}>
+                <form autoComplete="off" noValidate method="POST" className={classes.form} onSubmit={handleSubmit}>
                     <Avatar style={{ backgroundColor: "purple" }}>
                         <LockOpenIcon ></LockOpenIcon>
                     </Avatar>
@@ -123,7 +123,7 @@ export default function Register() {
                     }
                     <Button variant="contained" type="submit" fullWidth>{isSignUp ? "Sign Up" : "Sign In"}</Button>
                     <GoogleLogin
-                        clientId={process.env.GOOGLE_CLIENT_ID}
+                        clientId="862817458747-204lqoglmeo00flvhing60nvr1eihtrk.apps.googleusercontent.com"
                         render={(renderProps) => (
                             <Button variant="contained" onClick={renderProps.onClick} disabled={renderProps.disabled} fullWidth startIcon={<GoogleIcon fontSize="small" />}>GOOGLE SIGN IN</Button>
                         )}
